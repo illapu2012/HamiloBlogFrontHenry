@@ -1,0 +1,76 @@
+<template>
+    <!-- Page Header Start -->
+    <div class="container py-5 px-2 bg-primary">
+        <div class="row py-5 px-4">
+            <div class="col-sm-6 text-center text-md-left">
+                <h1 class="mb-3 mb-md-0 text-white text-uppercase font-weight-bold">Categorias</h1>
+            </div>
+            <div class="col-sm-6 text-center text-md-right">
+                <div class="d-inline-flex pt-2">
+                    <h4 class="m-0 text-white">
+                        <!-- <a class="text-white" href="#">Inicio</a> -->
+                        <RouterLink to="/" class="text-white">Inicio</RouterLink>
+                    </h4>
+                    <h4 class="m-0 text-white px-2">/</h4>
+                    <h4 class="m-0 text-white">Detalle</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Page Header End -->
+    <div class="container py-5 px-2 bg-white">
+        <div class="row px-4">
+            <div class="col-md-6" v-for="item in categorias" :key="item.id">
+                <div @click="filtrar(item.nombre)" class="card bg-dark text-white m-1">
+                    <img :src="item.imagen" alt="..." class="card-img">
+                    <div class="card-img-overlay text-center">
+                        <h2 class="card-title text-white p-3 shadow-lg">
+                            <br>
+                            <br>
+                            <b>{{ item.nombre }}</b>
+                        </h2>
+                        <p class="card-text">
+                            <i class="fas fa-list"></i> {{ item.cant_posts }} Posts
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    import axios from 'axios';
+    import { onMounted, ref } from 'vue';
+    import { useRouter } from 'vue-router';
+export default {
+    setup() {
+            const router = useRouter()
+            const baseUrl = 'http://hamiloblog.test/api'
+            const categorias = ref([]);
+            
+            onMounted(()=> {
+                obtenerDatos()
+            })
+            const obtenerDatos = async () => {
+                
+                try{
+                const { data } = await axios.get(baseUrl + '/categorias');
+                categorias.value = data.datos;
+                console.log(categorias.value);
+                }catch (error){
+                    console.log(error);
+                }
+            }
+            const filtrar = (id) => {
+                router.push({path: '/blog/' + id});
+            }
+            return{
+                categorias,
+                filtrar
+            }
+        }
+}
+</script>
+<style scooped>
+    
+</style>
